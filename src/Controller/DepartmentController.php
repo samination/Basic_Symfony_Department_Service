@@ -24,9 +24,32 @@ class DepartmentController extends AbstractController
         $this->studentRepository= $studentRepository;
     }
 
-       /* return $this->render('department/index.html.twig', [
-            'controller_name' => 'DepartmentController',
-        ]);*/
+    /**
+     * @Route("api/department", name="get_all_departments", methods={"GET"})
+     */
+    public function getAll(): JsonResponse
+    {
+        $departments = $this->departmentRepository->findAll( );
+        $data = [];
+
+        foreach ($departments as $department) {
+            $data[] = [
+                'id' => $department->getId(),
+                'address' => $department->getAddress(),
+                'name' => $department->getDepartmentName(),
+
+
+            ];
+        }
+
+        if(empty($data))
+        {
+            return new JsonResponse("No Departments Were found!", Response::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
+
 
     public function addDepartment(Request $request): JsonResponse
     {
