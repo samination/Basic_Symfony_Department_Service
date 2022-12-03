@@ -33,6 +33,12 @@ class Student
     private $email;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Department::class, inversedBy="Students")
+     * @ORM\JoinColumn(name="department_id_id",referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $departmentId;
+
+    /**
      * @return mixed
      */
     public function getEmail()
@@ -85,5 +91,17 @@ class Student
             'email' => $this->getEmail(),
             'grade' => $this->getGrade()
         ];
+    }
+
+    public function getDepartmentId(): ?Department
+    {
+        return $this->departmentId;
+    }
+
+    public function setDepartmentId(?Department $departmentId): self
+    {
+        $this->departmentId = $departmentId;
+
+        return $this;
     }
 }

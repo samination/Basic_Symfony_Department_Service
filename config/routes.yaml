@@ -5,6 +5,10 @@ student_create:
   path: api/student
   controller: App\Controller\StudentController:addStudent
   methods: [POST]
+department_create:
+  path: api/department
+  controller: App\Controller\DepartmentController:addDepartment
+  methods: [ POST ]
 api_login_check:
   path: api/login_check
 
