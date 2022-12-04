@@ -50,6 +50,31 @@ class StudentRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function getBestStudents()
+    {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT s.id,s.name,s.email,s.grade
+            FROM App\Entity\Student s
+            WHERE s.grade=(SELECT MAX(c.grade) FROM App\Entity\Student c)'
+        );
+
+
+        return $query->getArrayResult();
+
+    }
+    public function getSuccessStudent()
+    {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT s
+            FROM App\Entity\Student s
+            WHERE s.grade >= :grade
+            ORDER BY s.grade DESC'
+        )->setParameter('grade',10);
+
+
+        return $query->getArrayResult();
+
+    }
 
 //    /**
 //     * @return Student[] Returns an array of Student objects
@@ -88,4 +113,6 @@ class StudentRepository extends ServiceEntityRepository
         $this->manager->persist($newStudent);
         $this->manager->flush();
     }
+
+
 }

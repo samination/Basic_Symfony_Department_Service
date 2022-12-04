@@ -47,8 +47,8 @@ class StudentController extends AbstractController
         foreach ($students as $student) {
             $data[] = [
                 'id' => $student->getId(),
-                'firstName' => $student->getName(),
-                'lastName' => $student->getGrade(),
+                'name' => $student->getName(),
+                'grade' => $student->getGrade(),
                 'email' => $student->getEmail(),
 
             ];
@@ -74,6 +74,35 @@ class StudentController extends AbstractController
         ];
 
         return new JsonResponse($data, Response::HTTP_OK);
+    }
+    /**
+     * @Route("/bestStudent", name="get_best_student", methods={"GET"})
+     */
+    public function getBestStudent():JsonResponse
+    {
+        $bestStudents=$this->studentRepository->getBestStudents();
+
+        if($bestStudents==null){
+            return new JsonResponse("Students not Found!", Response::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($bestStudents, Response::HTTP_OK);
+
+    }
+
+    /**
+     * @Route("/successStudent", name="get_success_student", methods={"GET"})
+     */
+    public function getSuccessStudent():JsonResponse
+    {
+        $bestStudents=$this->studentRepository->getSuccessStudent();
+
+        if($bestStudents==null){
+            return new JsonResponse("No Student Has Succeeded!", Response::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($bestStudents, Response::HTTP_OK);
+
     }
 
 }

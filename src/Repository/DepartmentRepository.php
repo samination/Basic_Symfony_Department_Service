@@ -67,6 +67,39 @@ class DepartmentRepository extends ServiceEntityRepository
     }
 
 }
+
+public function  getDepartmentStudents(int $id)
+{
+
+    $query = $this->getEntityManager()->createQuery(
+        'SELECT s.name,s.grade,s.email,d.DepartmentName,d.Address
+            FROM App\Entity\Student s,App\Entity\Department d
+            WHERE s.departmentId=d.DepartmentId  AND s.departmentId = :id
+            '
+    )->setParameter('id',$id);
+
+
+    return $query->getArrayResult();
+
+
+}
+
+    public function  getDepartmentSuccessStudents(int $id)
+    {
+
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT s.name,s.grade,s.email,d.DepartmentName,d.Address
+            FROM App\Entity\Student s,App\Entity\Department d
+            WHERE s.departmentId=d.DepartmentId  AND s.departmentId = :id AND s.grade>= :grade
+            '
+        )->setParameter('id',$id)
+        ->setParameter('grade',10);
+
+
+        return $query->getArrayResult();
+
+
+    }
 //    /**
 //     * @return Department[] Returns an array of Department objects
 //     */

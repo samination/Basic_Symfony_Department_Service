@@ -90,4 +90,32 @@ class DepartmentController extends AbstractController
         return new JsonResponse("Student Assign", Response::HTTP_CREATED);
     }
 
+    /**
+     * @Route("/department/{id}/students", name="get_department_students", methods={"GET"})
+     */
+    public function getDepartmentStudents($id): JsonResponse
+    {
+        $students = $this->departmentRepository->getDepartmentStudents($id);
+        if($students==null){
+            return new JsonResponse("Student not Found!", Response::HTTP_NOT_FOUND);
+        }
+
+
+        return new JsonResponse($students, Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/department/{id}/successStudents", name="get_departmentSuccess_students", methods={"GET"})
+     */
+    public function getDepartmentSuccessStudents($id): JsonResponse
+    {
+        $students = $this->departmentRepository->getDepartmentSuccessStudents($id);
+        if($students==null){
+            return new JsonResponse("Student not Found!", Response::HTTP_NOT_FOUND);
+        }
+
+
+        return new JsonResponse($students, Response::HTTP_OK);
+    }
+
 }
