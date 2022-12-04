@@ -50,6 +50,15 @@
             "./migrations/.gitignore"
         ]
     },
+    "jms/serializer-bundle": {
+        "version": "5.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "384cec52df45f3bfd46a09930d6960a58872b268"
+        }
+    },
     "lexik/jwt-authentication-bundle": {
         "version": "2.16",
         "recipe": {
