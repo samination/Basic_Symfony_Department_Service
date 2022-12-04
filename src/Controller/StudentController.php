@@ -1,21 +1,28 @@
 <?php
 namespace App\Controller;
 
+use App\Dto\StudentResponseDto;
 use App\Repository\StudentRepository;
+use App\Service\StudentService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class StudentController extends AbstractController
 {
     private StudentRepository $studentRepository;
+    private StudentService $studentService;
+    private SerializerInterface $serializer;
 
-    public function __construct(StudentRepository $studentRepository)
+    public function __construct(StudentRepository $studentRepository,StudentService $studentService, SerializerInterface $serializer)
     {
         $this->studentRepository = $studentRepository;
+        $this->studentService = $studentService;
+        $this->serializer= $serializer;
     }
 
 
@@ -33,6 +40,8 @@ class StudentController extends AbstractController
 
         $this->studentRepository->saveStudent($Name,$grade,$email);
 
+
+
         return new JsonResponse(['status' => 'Customer created!'], Response::HTTP_CREATED);
     }
 
@@ -41,20 +50,18 @@ class StudentController extends AbstractController
      */
     public function getAll(): JsonResponse
     {
-        $students = $this->studentRepository->findAll( );
-        $data = [];
+        $studentsDto = $this->studentService->getAllStudents();
 
-        foreach ($students as $student) {
-            $data[] = [
-                'id' => $student->getId(),
-                'name' => $student->getName(),
-                'grade' => $student->getGrade(),
-                'email' => $student->getEmail(),
 
-            ];
+        $dto = $this->serializer->serialize($studentsDto, 'json');
+
+        if(empty($dto)){
+            return new JsonResponse("Student not Found!", Response::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse($data, Response::HTTP_OK);
+
+
+        return new JsonResponse($dto,Response::HTTP_OK,[],true);
     }
 
     /**
@@ -62,18 +69,17 @@ class StudentController extends AbstractController
      */
     public function get($name): JsonResponse
     {
-        $student = $this->studentRepository->findOneBy(['name' => $name]);
-            if($student==null){
+        $studentDto =$this->studentService->getStudentByName($name);
+
+        $dto = $this->serializer->serialize($studentDto, 'json');
+
+            if(empty($studentDto)){
                 return new JsonResponse("Student not Found!", Response::HTTP_NOT_FOUND);
             }
-        $data = [
-            'id' => $student->getId(),
-            'name' => $student->getName(),
-            'email' => $student->getEmail(),
-            'grade' => $student->getGrade(),
-        ];
 
-        return new JsonResponse($data, Response::HTTP_OK);
+
+
+        return new JsonResponse($dto,Response::HTTP_OK,[],true);
     }
     /**
      * @Route("/bestStudent", name="get_best_student", methods={"GET"})
